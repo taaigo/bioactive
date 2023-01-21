@@ -18,7 +18,7 @@
 #define DEF_MENU_HOW_TO_UPDATE_MSG 4
 
 //setting menu
-#define DEF_SEM_NUM_OF_MSG 66
+#define DEF_SEM_NUM_OF_MSG 67
 #define DEF_SEM_ENABLE_ICON
 //#define DEF_SEM_ENABLE_NAME
 #define DEF_SEM_ICON_PATH (std::string)"romfs:/gfx/draw/icon/sem_icon.t3x"
@@ -116,7 +116,12 @@
 #define DEF_SEM_SPANISH_MSG 63
 #define DEF_SEM_ROMANIAN_MSG 64
 #define DEF_SEM_POLISH_MSG 65
+#define DEF_SEM_CPU_USAGE_MONITOR_MSG 66
 
+//You need to enable DEF_ENABLE_SW_CONVERTER_API **and** DEF_ENABLE_VIDEO_AUDIO_ENCODER_API as well to use screen recorder
+#define DEF_SEM_ENABLE_SCREEN_RECORDER 0
+//You need to enable DEF_ENABLE_HTTPC_API **or** DEF_ENABLE_CURL_API as well to use updater
+#define DEF_SEM_ENABLE_UPDATER 1
 
 //camera
 #define DEF_CAM_OUT_YUV422 0
@@ -162,6 +167,14 @@
 #define DEF_CAM_WHITE_BALANCE_5200K 3
 #define DEF_CAM_WHITE_BALANCE_6000K 4
 #define DEF_CAM_WHITE_BALANCE_7000K 5
+
+//CPU usage monitor
+#define DEF_CPU_CALCULATE_THREAD_STR (std::string)"CPU/Calculate thread"
+#define DEF_CPU_COUNTER_THREAD_STR (std::string)"CPU/Counter thread"
+
+//Change setting (contorl hardware)
+#define DEF_CSET_WAKE_UP_PRESS_HOME_BUTTON (1 << 2)
+#define DEF_CSET_WAKE_UP_OPEN_SHELL (1 << 5)
 
 //abgr8888 color
 #define DEF_DRAW_RED 0xFF0000FF
@@ -254,6 +267,12 @@
 #define DEF_ERR_ALREADY_INITIALIZED 0xFFFFFFF6
 #define DEF_ERR_NOT_INITIALIZED 0xFFFFFFF5
 #define DEF_ERR_CURL_RETURNED_NOT_SUCCESS 0xFFFFFFF4
+#define DEF_ERR_NEED_MORE_INPUT 0xFFFFFFF3
+//This is different from DEF_ERR_MVD_TRY_AGAIN_, No video output was made at this call, try again without calling Util_decoder_ready_video_packet().
+#define DEF_ERR_MVD_TRY_AGAIN_NO_OUTPUT 0xFFFFFFF2
+//This is different from DEF_ERR_MVD_TRY_AGAIN_NO_OUTPUT, Video output was made at this call, try again without calling Util_decoder_ready_video_packet().
+#define DEF_ERR_MVD_TRY_AGAIN 0xFFFFFFF1
+#define DEF_ERR_DISABLED 0xFFFFFFF0
 
 #define DEF_ERR_OTHER_STR (std::string)"[Error] Something went wrong. "
 #define DEF_ERR_OUT_OF_MEMORY_STR (std::string)"[Error] Out of memory. "
@@ -268,6 +287,10 @@
 #define DEF_ERR_NOT_INITIALIZED_STR (std::string)"[Error] Not initialized. "
 #define DEF_ERR_NINTENDO_RETURNED_NOT_SUCCESS_STR (std::string)"[Error] Nintendo api returned NOT success. "
 #define DEF_ERR_CURL_RETURNED_NOT_SUCCESS_STR (std::string)"[Error] curl returned NOT success. "
+#define DEF_ERR_NEED_MORE_INPUT_STR (std::string)"[Error] Need more input to produce the output. "
+#define DEF_ERR_MVD_TRY_AGAIN_NO_OUTPUT_STR (std::string)"[Error] Try again (video output was made). "
+#define DEF_ERR_MVD_TRY_AGAIN_STR (std::string)"[Error] Try again. "
+#define DEF_ERR_DISABLED_STR (std::string)"[Error] This function is disabled. "
 
 //error
 #define DEF_ERR_INIT_STR (std::string)"Err/Init"

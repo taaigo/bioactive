@@ -40,7 +40,7 @@ Result_with_string Draw_init(bool wide, bool _3d)
 	else if(_3d)
 		gfxSet3D(_3d);
 
-	if(!C3D_Init(C3D_DEFAULT_CMDBUF_SIZE))
+	if(!C3D_Init(C3D_DEFAULT_CMDBUF_SIZE * 1.5))
 	{
 		result.error_description = "[Error] C3D_Init() failed. ";
 		goto other;
@@ -138,7 +138,7 @@ Result_with_string Draw_reinit(bool wide, bool _3d)
 	else if(_3d)
 		gfxSet3D(_3d);
 
-	if(!C3D_Init(C3D_DEFAULT_CMDBUF_SIZE))
+	if(!C3D_Init(C3D_DEFAULT_CMDBUF_SIZE * 1.5))
 	{
 		result.error_description = "[Error] C3D_Init() failed. ";
 		goto other;
@@ -300,7 +300,7 @@ int tex_size_x, int tex_size_y, int color_format)
 	int tex_offset = 0;
 	int buffer_offset = 0;
 	Result_with_string result;
-#ifdef DEF_DRAW_USE_DMA
+#if DEF_DRAW_USE_DMA
 	bool dma_result[4] = { false, false, false, false, };
 	int dma_count = 0;
 	Handle dma_handle[4] = { 0, 0, 0, 0, };
@@ -330,12 +330,12 @@ int tex_size_x, int tex_size_y, int color_format)
 	image->subtex->bottom = 1.0 - pic_height / (float)tex_size_y;
 	image->c2d.subtex = image->subtex;
 
-#ifdef DEF_DRAW_USE_DMA
+#if DEF_DRAW_USE_DMA
 	dmaConfigInitDefault(&dma_config);
 #endif
 	for(int i = 0; i < pic_height / 8; i ++)
 	{
-#ifdef DEF_DRAW_USE_DMA
+#if DEF_DRAW_USE_DMA
 		dma_result[dma_count] = svcStartInterProcessDma(&dma_handle[dma_count], CUR_PROCESS_HANDLE, (u32)((u8*)image->c2d.tex->data + tex_offset),
 		CUR_PROCESS_HANDLE, (u32)buf + buffer_offset, pic_width * 8 * pixel_size, &dma_config);
 		dma_count++;
@@ -345,7 +345,7 @@ int tex_size_x, int tex_size_y, int color_format)
 		tex_offset += tex_size_x * pixel_size * 8;
 		buffer_offset += pic_width * pixel_size * 8;
 
-#ifdef DEF_DRAW_USE_DMA
+#if DEF_DRAW_USE_DMA
 		if(dma_count > 3)
 		{
 			for(int k = 0; k < 4; k++)
@@ -361,7 +361,7 @@ int tex_size_x, int tex_size_y, int color_format)
 #endif
 	}
 
-#ifdef DEF_DRAW_USE_DMA
+#if DEF_DRAW_USE_DMA
 	for(int k = 0; k < 4; k++)
 	{
 		if(dma_result[k] == 0)
@@ -708,7 +708,7 @@ void Draw_get_text_size(std::string text, float text_size_x, float text_size_y, 
 		if(!Exfont_is_loaded_external_font(0) || (font_list[1][i] >= 0 && font_list[1][i] <= 3))
 		{
 			if(!Exfont_is_loaded_external_font(0))
-				util_draw_system_fonts[font_list[1][i]] = 0;
+				font_list[1][i] = 0;
 
 			if(font_list[1][i] == 1)
 			{
@@ -826,7 +826,7 @@ void Draw(std::string text, float x, float y, float text_size_x, float text_size
 			if(!Exfont_is_loaded_external_font(0) || (font_list[1][i] >= 0 && font_list[1][i] <= 3))
 			{
 				if(!Exfont_is_loaded_external_font(0))
-					util_draw_system_fonts[font_list[1][i]] = 0;
+					font_list[1][i] = 0;
 
 				if(font_list[1][i] == 1)
 				{
@@ -925,7 +925,7 @@ void Draw(std::string text, float x, float y, float text_size_x, float text_size
 		if(!Exfont_is_loaded_external_font(0) || (font_list[1][i] >= 0 && font_list[1][i] <= 3))
 		{
 			if(!Exfont_is_loaded_external_font(0))
-				util_draw_system_fonts[font_list[1][i]] = 0;
+				font_list[1][i] = 0;
 
 			C2D_TextBufClear(c2d_buf);
 			if(font_list[1][i] == 1)
@@ -1038,7 +1038,7 @@ void Draw(std::string text, float x, float y, float text_size_x, float text_size
 			if(!Exfont_is_loaded_external_font(0) || (font_list[1][i] >= 0 && font_list[1][i] <= 3))
 			{
 				if(!Exfont_is_loaded_external_font(0))
-					util_draw_system_fonts[font_list[1][i]] = 0;
+					font_list[1][i] = 0;
 
 				if(font_list[1][i] == 1)
 				{
@@ -1137,7 +1137,7 @@ void Draw(std::string text, float x, float y, float text_size_x, float text_size
 		if(!Exfont_is_loaded_external_font(0) || (font_list[1][i] >= 0 && font_list[1][i] <= 3))
 		{
 			if(!Exfont_is_loaded_external_font(0))
-				util_draw_system_fonts[font_list[1][i]] = 0;
+				font_list[1][i] = 0;
 
 			C2D_TextBufClear(c2d_buf);
 			if(font_list[1][i] == 1)
@@ -1376,6 +1376,25 @@ void Draw_line(float x_0, float y_0, int abgr8888_0, float x_1, float y_1, int a
 	//magic C2D_DrawLine() won't work without calling C2D_DrawRectangle()
 	C2D_DrawLine(x_0, y_0, abgr8888_0, x_1, y_1, abgr8888_1, width, 0);
 }
+
+#if DEF_ENABLE_CPU_MONITOR_API
+void Draw_cpu_usage_info(void)
+{
+	int char_length = 0;
+	char msg_cache[128];
+	if(!util_draw_init)
+		return;
+
+	char_length = snprintf(msg_cache, 128, "CPU : %.1f%%", Util_cpu_usage_monitor_get_cpu_usage(-1));
+	for(int i = 0; i < 4; i++)
+		char_length += snprintf((msg_cache + char_length), 128 - char_length, "\nCore #%d : %.1f%%", i, Util_cpu_usage_monitor_get_cpu_usage(i));
+
+	snprintf((msg_cache + char_length), 128 - char_length, "\n(#1 max : %ld%%)", Util_get_core_1_max());
+
+	Draw(msg_cache, 300, 25, 0.4, 0.4, DEF_DRAW_BLACK, DEF_DRAW_X_ALIGN_RIGHT, DEF_DRAW_Y_ALIGN_CENTER, 100, 60,
+	DEF_DRAW_BACKGROUND_UNDER_TEXT, var_square_image[0], 0x80FFFFFF);
+}
+#endif
 
 void Draw_debug_info(void)
 {

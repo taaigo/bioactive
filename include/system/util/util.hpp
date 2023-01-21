@@ -5,6 +5,8 @@ extern "C" void* __real_realloc(void* ptr, size_t size);
 extern "C" void __real_free(void* ptr);
 extern "C" void __real__free_r(struct _reent *r, void* ptr);
 extern "C" void* __real_memalign(size_t alignment, size_t size);
+extern "C" Result __real_APT_SetAppCpuTimeLimit(u32 percent);
+extern "C" Result __real_APT_GetAppCpuTimeLimit(u32* percent);
 
 /**
  * @brief Initialize util API.
@@ -238,3 +240,32 @@ u32 Util_check_free_linear_space(void);
  * @warning Thread dangerous (untested)
 */
 u32 Util_check_free_ram(void);
+
+/**
+ * @brief Check max allowed core #1 usage.
+ * @return Max allowed core #1 usage.
+ * @warning Thread dangerous (untested)
+*/
+u32 Util_get_core_1_max(void);
+
+
+/**
+ * @brief To prevent 'statement has no effect' warning in unused functions.
+*/
+bool Util_return_bool(bool value);
+/**
+ * @brief To prevent 'statement has no effect' warning in unused functions.
+*/
+int Util_return_int(int value);
+/**
+ * @brief To prevent 'statement has no effect' warning in unused functions.
+*/
+double Util_return_double(double value);
+/**
+ * @brief To prevent 'statement has no effect' warning in unused functions.
+*/
+std::string Util_return_string(std::string string);
+/**
+ * @brief To prevent 'statement has no effect' warning in unused functions.
+*/
+Result_with_string Util_return_result_with_string(Result_with_string value);

@@ -3,6 +3,7 @@
 
 bool util_safe_linear_alloc_init = false, util_init = false;
 int util_draw_num_of_watch_bool = 0, util_draw_num_of_watch_int = 0, util_draw_num_of_watch_double = 0, util_draw_num_of_watch_string = 0;
+u32 util_max_core_1 = 0;
 Handle util_safe_linear_alloc_mutex = -1, util_watch_variables_mutex = -1;
 Watch_bool util_draw_watch_bool[DEF_DRAW_MAX_WATCH_BOOL_VARIABLES];
 Watch_int util_draw_watch_int[DEF_DRAW_MAX_WATCH_INT_VARIABLES];
@@ -102,6 +103,24 @@ extern "C" void* __wrap_memalign(size_t alignment, size_t size)
 	return ptr;
 }
 
+extern "C" Result __wrap_APT_SetAppCpuTimeLimit(u32 percent)
+{
+	Result code = __real_APT_SetAppCpuTimeLimit(percent);
+	if(code == 0)
+		util_max_core_1 = percent;
+	
+	return code;
+}
+
+extern "C" Result __wrap_APT_GetAppCpuTimeLimit(u32* percent)
+{
+	Result code = __real_APT_GetAppCpuTimeLimit(percent);
+	if(percent && code == 0)
+		util_max_core_1 = *percent;
+	
+	return code;
+}
+
 Result_with_string Util_init(void)
 {
 	Result_with_string result;
@@ -128,12 +147,12 @@ Result_with_string Util_init(void)
 	for(int i = 0; i < DEF_DRAW_MAX_WATCH_INT_VARIABLES; i++)
 	{
 		util_draw_watch_int[i].address = NULL;
-		util_draw_watch_int[i].previous_value = INT_MAX;
+		util_draw_watch_int[i].previous_value = INT32_MAX;
 	}
 	for(int i = 0; i < DEF_DRAW_MAX_WATCH_DOUBLE_VARIABLES; i++)
 	{
 		util_draw_watch_double[i].address = NULL;
-		util_draw_watch_double[i].previous_value = INT_MAX;
+		util_draw_watch_double[i].previous_value = INT32_MAX;
 	}
 	for(int i = 0; i < DEF_DRAW_MAX_WATCH_STRING_VARIABLES; i++)
 	{
@@ -172,7 +191,7 @@ void Util_exit(void)
 	for(int i = 0; i < DEF_DRAW_MAX_WATCH_INT_VARIABLES; i++)
 	{
 		util_draw_watch_int[i].address = NULL;
-		util_draw_watch_int[i].previous_value = INT_MAX;
+		util_draw_watch_int[i].previous_value = INT32_MAX;
 	}
 	for(int i = 0; i < DEF_DRAW_MAX_WATCH_DOUBLE_VARIABLES; i++)
 	{
@@ -348,7 +367,7 @@ void Util_remove_watch(int* variable)
 		if(util_draw_watch_int[i].address == variable)
 		{
 			util_draw_watch_int[i].address = NULL;
-			util_draw_watch_int[i].previous_value = INT_MAX;
+			util_draw_watch_int[i].previous_value = INT32_MAX;
 			util_draw_num_of_watch_int--;
 			break;
 		}
@@ -827,4 +846,34 @@ u32 Util_check_free_ram(void)
 		__real_free(malloc_check[i]);
 
 	return count * 100 * 1024;//return free B
+}
+
+u32 Util_get_core_1_max(void)
+{
+	return util_max_core_1;
+}
+
+bool Util_return_bool(bool value)
+{
+	return value;
+}
+
+int Util_return_int(int value)
+{
+	return value;
+}
+
+double Util_return_double(double value)
+{
+	return value;
+}
+
+std::string Util_return_string(std::string string)
+{
+	return string;
+}
+
+Result_with_string Util_return_result_with_string(Result_with_string value)
+{
+	return value;
 }

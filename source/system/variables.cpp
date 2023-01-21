@@ -15,6 +15,7 @@ bool var_flash_mode = false;
 bool var_wifi_enabled = false;
 bool var_high_resolution_mode = true;
 bool var_3d_mode = false;
+bool var_monitor_cpu_usage = false;
 bool var_turn_on_top_lcd = true;
 bool var_turn_on_bottom_lcd = true;
 bool var_core_2_available = false;
@@ -54,3 +55,4 @@ std::string var_model_name[6] = { "OLD 3DS", "OLD 3DS XL", "NEW 3DS", "OLD 2DS",
 std::string var_debug_string[8] = { "", "", "", "", "", "", "", "", };
 C2D_Image var_square_image[1];
 C2D_Image var_null_image;
+Result_with_string var_disabled_result;
